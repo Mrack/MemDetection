@@ -1,0 +1,20 @@
+[package]
+name = "rust"
+version = "0.1.0"
+edition = "2021"
+authors = ["mrack"]
+
+
+[target.'cfg(target_os = "android")'.dependencies]
+ndk = "0.6.0"
+jni = { version = "0.19.0", default-features = false }
+android_logger = "0.11.1"
+
+[lib]
+crate-type = ["cdylib", "staticlib"]
+
+[dependencies]
+lazy_static = "1.4.0"
+goblin = "0.6.0"
+anyhow = "1.0.66"
+log = "0.4.17"

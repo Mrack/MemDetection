@@ -1,0 +1,46 @@
+plugins {
+    id 'com.android.application'
+    id 'org.mozilla.rust-android-gradle.rust-android'
+}
+
+cargo {
+    module  = "../rust"       // Or whatever directory contains your Cargo.toml
+    libname = "rust"          // Or whatever matches Cargo.toml's [package] name.
+    targets = ["arm64"]  // See bellow for a longer list of options
+}
+
+android {
+    namespace 'cn.mrack.detection'
+    compileSdk 32
+
+    defaultConfig {
+        applicationId "cn.mrack.detection"
+        minSdk 21
+        targetSdk 32
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+tasks.whenTaskAdded { task ->
+    if ((task.name == 'javaPreCompileDebug' || task.name == 'javaPreCompileRelease')) {
+        task.dependsOn 'cargoBuild'
+    }
+}
+
+dependencies {
+    
+}
