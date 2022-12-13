@@ -8,6 +8,7 @@ use std::fs;
 use std::path::Path;
 use goblin::elf::{Elf, ProgramHeader};
 use goblin::elf::program_header::PT_LOAD;
+use libc::c_void;
 use crate::maps::MapItem;
 
 pub struct Checker {
@@ -43,7 +44,7 @@ impl Checker {
             if platform.is_ok() {
                 let platform = platform.unwrap();
                 platform.program_headers.iter().for_each(|header| {
-                    if header.p_type == PT_LOAD && header.is_executable() && header.is_read() {
+                    if header.p_type == PT_LOAD && header.is_executable() {
                         if header.p_offset == self.m.offset {
                             if self.crc == 0 {
                                 let len = header.p_memsz as usize;
@@ -64,6 +65,9 @@ impl Checker {
         }
         let len = header.unwrap().p_memsz as usize;
         let ptr_data = self.m.start as *const u8;
+        unsafe{
+            libc::mprotect(ptr_data as *mut c_void, len, libc::PROT_READ | libc::PROT_WRITE | libc::PROT_EXEC);
+        }
         let raw_data = unsafe { slice::from_raw_parts(ptr_data, len) };
         let crc1 = checksum(raw_data);
         if crc1 != self.crc {

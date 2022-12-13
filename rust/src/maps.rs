@@ -40,6 +40,7 @@ impl ProcMaps {
         let mut content = String::new();
         file.read_to_string(&mut content).map_err(|_| "Cannot read file")?;
         let mut lines = Vec::new();
+
         for line in content.split("\n") {
             let mut iter = line.split_whitespace();
             let start_end = iter.next();
@@ -69,7 +70,6 @@ impl ProcMaps {
                 pathname: pathname.clone().to_string(),
             });
         }
-
         Ok(Self {
             lines
         })

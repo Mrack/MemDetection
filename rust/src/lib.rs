@@ -53,7 +53,9 @@ mod android {
                                   "Couldn't get java string").into();
         let maps = ProcMaps::new().unwrap();
         for m in maps {
-            if m.pathname.contains(&f) && m.perm == "r-xp" {
+            // if m.pathname.contains(&f) && m.perm == "r-xp" {
+            if m.pathname.contains(&f) && m.perm.contains("x") {
+
                 let result = Checker::new(m).check();
                 let f = if result.is_ok() {
                     "Elf is not modified"
